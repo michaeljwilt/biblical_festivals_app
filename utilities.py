@@ -1,9 +1,9 @@
 import requests
 from astral import LocationInfo
 from astral.sun import sun
-from datetime import datetime
 import pytz
-from pyluach import dates
+import pandas as pd
+import yaml
 
 def get_location():
     response = requests.get('https://ipinfo.io')
@@ -27,24 +27,35 @@ def calculate_sunset(latitude, longitude, date, user_timezone):
         s = sun(location.observer, date=date)
         sunset_utc = s["sunset"]
         sunset_local = convert_timezone(sunset_utc, user_timezone)
-        sunset = sunset_local.strftime("%H:%M %p")
+        sunset = sunset_local.strftime("%I:%M %p")
         return sunset
     except ValueError as e:
         return str(e)
 
-def next_shabbat():
-    # Get today's Gregorian date
-    today = dates.GregorianDate.today()
+# get the next shabbat
+def get_next_shabbat(city):
+    url = f"https://www.hebcal.com/shabbat?cfg=json&geonameid={city}"
+    response = requests.get(url)
+    data = response.json()
+    for item in data['items']:
+        if item['category'] == 'candles':
+            date = pd.to_datetime(item['date'])
+            return date.strftime('%Y-%m-%d %H:%M')
 
-    # Calculate the number of days until the next Friday (weekday 4 in pyluach)
-    days_until_friday = (4 - today.weekday()) % 7
 
-    # If today is Friday, we need to check if it's before Shabbat starts (sundown), and if so, today is Shabbat
-    # Otherwise, we need to move to the next Friday
-    if days_until_friday == 0:
-        shabbat_start = today
-    else:
-        shabbat_start = today.add(days_until_friday)
+def get_location_info(city):
+    url = f"https://www.hebcal.com/shabbat?cfg=json&geonameid={city}"
+    response = requests.get(url)
+    data = response.json()
+    latitude = data['location']['latitude']
+    longitude = data['location']['longitude']
+    timezone = pytz.timezone(data['location']['tzid'])
+    return latitude, longitude, timezone
+
+def read_yaml(file_path):
+    with open(file_path, 'r') as file:
+        data = yaml.safe_load(file)
+    return data
+
+
     
-    # Return the next Shabbat date
-    return shabbat_start
