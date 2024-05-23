@@ -1,0 +1,125 @@
+/* Center title text */
+.title-container {
+    text-align: center;
+}
+
+/* Change elements of title text class */
+.title-text {
+    font-size: 50px;
+    padding-bottom: 20px;
+    font-family: 'Gibson', sans-serif;
+    color: #485c84;
+}
+
+/* Adjust size of progress bar */
+.stProgress > div > div > div {
+    height: 30px; 
+}
+
+/* Change color of progress bar */
+.stProgress {
+    color: #3c84f0; 
+}
+
+/*Center Metric*/
+[data-testid="stMetric"]{ 
+    width: fit-content;
+    margin: auto;
+}
+
+/*Center Metric Value*/
+[data-testid="stMetricValue"]{ 
+    width: fit-content;
+    margin: auto;
+}
+
+/*Center Metric Label*/
+[data-testid="stMetricLabel"] {
+    width: fit-content;
+    margin: auto;
+}
+
+/* Centering markdown containers */
+[data-testid="stMarkdownContainer"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Centering Subheaders and Headers */
+.st-emotion-cache-1dtefog.eqpbllx3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Center Checkbox */
+.row-widget.stCheckbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10px;
+}
+
+/* Center Graph inside Checkbox */
+[data-testid="stStyledFullScreenFrame"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Center Selectbox label */
+.st-emotion-cache-ue6h4q {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Change size of paragraph items (metric labels specifically) - dark mode */
+.st-emotion-cache-sh2krr p {
+    font-size: 20px; /* Adjust the font size as needed */
+    border-bottom: 1px solid #485c84;
+}
+
+/* Change size of paragraph items (metric labels specifically) - light mode */
+.st-emotion-cache-l9bjmx p {
+    font-size: 20px; /* Adjust the font size as needed */
+    border-bottom: 1px solid #485c84;
+}
+
+/* Center Popover */
+[data-testid="stPopover"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Change font size of and center the Metric Delta */
+[data-testid='stMetricDelta'] {
+    text-align: center;
+    font-size: 25px;
+    }
+/* get rid of arrows in metrics - replacing them with emojis to better align the text */
+.st-emotion-cache-jw45d2 {
+display: none;
+}
+
+/* Change font size of paragraph items */
+p {
+    font-size: 25px;
+}
+
+/* Center mardown text */
+[data-testid="stMarkdown"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Get rid of padding for h4 elements */
+h4 {
+    padding: 0px;
+}
