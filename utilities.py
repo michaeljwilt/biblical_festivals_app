@@ -4,6 +4,8 @@ from astral.sun import sun
 import pytz
 import pandas as pd
 import yaml
+import streamlit as st
+from datetime import datetime
 
 def get_location():
     response = requests.get('https://ipinfo.io')
@@ -56,6 +58,17 @@ def read_yaml(file_path):
     with open(file_path, 'r') as file:
         data = yaml.safe_load(file)
     return data
+
+
+def get_countdown_html(target_datetime_str, include_text):
+    with open("countdown.html", "r") as file:
+        html = file.read()
+    # Replace the placeholders with the actual target datetime and prefix text
+    prefix_text = "Begins in:" if include_text else ""
+    html = html.replace("{target_datetime}", target_datetime_str)
+    html = html.replace("{prefix_text}", prefix_text)
+    return html
+
 
 
     
