@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        #countdown-container {
+            text-align: center;
+            margin: 0; /* Adjust margin */
+        }
+        #countdown {
+            font-size: 2em; /* Adjust the font size */
+            color: "black"; /* Dynamic font color */
+            display: inline-block;
+            margin: 0; /* Adjust margin */
+        }
+        #timer {
+            /* background-color: #f0f0f0; */
+            padding: 0; /* Adjust padding */
+            border-radius: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id="countdown-container">
+        <div id="countdown">
+            <p id="timer"></p>
+        </div>
+    </div>
+
+    <script>
+        function countdown(targetDate) {{
+            const target = new Date(targetDate).getTime();
+
+            const x = setInterval(function() {{
+                const now = new Date().getTime();
+                const distance = target - now;
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("timer").innerHTML = "<b>" + "{prefix_text} " + days + "d " + hours + "h "
+                + minutes + "m " + seconds + "s" + "</b>";
+
+                // if (distance < 0) {{
+                //     clearInterval(x);
+                //     document.getElementById("timer").innerHTML = "EXPIRED";
+                // }}
+            }}, 1000);
+        }}
+
+        countdown('{target_datetime}');
+    </script>
+</body>
+</html>
