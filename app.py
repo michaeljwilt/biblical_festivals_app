@@ -3,11 +3,13 @@ from pyluach import dates, hebrewcal
 from pyluach.hebrewcal import Year
 import datetime
 import pandas as pd
-from utilities import calculate_sunset, get_next_shabbat, get_location_info, read_yaml
+from utilities import calculate_sunset, get_next_shabbat, get_location_info, read_yaml, get_countdown_html
 import streamlit as st
+import streamlit.components.v1 as components
+
 
 #---------------Configurations---------------#
-st.set_page_config(page_title="Biblical Festivals", page_icon="🌟", layout="wide")
+st.set_page_config(page_title="Biblical Festivals", page_icon="📖", layout="wide")
 
 # -------------------------CSS-------------------------#
 # open/create css object
@@ -65,9 +67,9 @@ filtered_df["event_countdown"] = filtered_df.apply(lambda x: f"{x['days_until_fe
 
 
 #---------------Shabbat Info---------------#
-next_shabbat_date = get_next_shabbat(geo_name_id)
-time_till_shabbat = pd.to_datetime(next_shabbat_date) - today
-shabbat_countdown = f"{time_till_shabbat.days} day(s) {time_till_shabbat.seconds // 3600} hour(s) {time_till_shabbat.seconds % 3600 // 60} minute(s)"
+next_shabbat_date_str = get_next_shabbat(geo_name_id)
+next_shabbat_date = pd.to_datetime(next_shabbat_date_str)
+
 
 
 
@@ -77,11 +79,16 @@ st.header("Upcoming Festival & Shabbat", divider="gray")
 col1, col2 = st.columns(2)
 with col1.container(border=True):
     st.subheader(f"{filtered_df.iloc[0]['Festival']} begins in:")
-    st.subheader(f"{filtered_df.iloc[0]['event_countdown']}")
+    countdown_html = get_countdown_html(f"{filtered_df.iloc[0]['full_start_timestamp']}", include_text=False)
+    components.html(countdown_html, height=75)
     
 with col2.container(border=True):
     st.subheader("Next Shabbat begins in:")
-    st.subheader(shabbat_countdown)
+    if next_shabbat_date < today:
+        st.warning("Shabbat info is not available for the current week. Please check back later.")
+    else:
+        countdown_html = get_countdown_html(next_shabbat_date_str, include_text=False)
+        components.html(countdown_html, height=75)
 
 #button to show more upcoming festivals
 checkbox = st.checkbox("Show More Upcoming Festivals")
@@ -90,18 +97,18 @@ if checkbox:
     yaml_info = read_yaml("festivals.yaml")
     #for each row in the dataframe, display the festival and the sunset time in an st.expander
     for index, row in filtered_df.iterrows():
-        description = yaml_info.get(row['Festival'], "Description not found")
-        st.subheader(row['Festival'], divider='blue')
-        start_date_str = row['start_date_timestamp'].replace(' PM', '')
-        start_date = datetime.datetime.strptime(start_date_str, '%Y-%m-%d %H:%M')
-        difference = start_date - today
-        if difference.days < 1:
-            diff = difference.total_seconds() // 3600
-            st.write(f"{row['Festival']} starts in {diff:.0f} hour(s)")
-        else:
-            st.write(f"{row['Festival']} starts in {difference.days} day(s)")
-        with st.expander("More Info", expanded=False):
-            st.write(f"Begins on: {row['start_date_timestamp']}")
-            st.write(description)
-        st.subheader("")
+        with st.container(border=True):
+            description = yaml_info.get(row['Festival'], "Description not found")
+            st.subheader(row['Festival'], divider='blue')
+            start_date_str = row['start_date_timestamp'].replace(' PM', '')
+            start_date = datetime.datetime.strptime(start_date_str, '%Y-%m-%d %H:%M')
+            # Get the updated HTML content
+            countdown_html = get_countdown_html(start_date_str, include_text=True)
 
+            # st.subheader("Countdown to Festival")
+            # Display the countdown clock in Streamlit
+            components.html(countdown_html, height=75)
+            with st.expander("More Info", expanded=False):
+                st.write(f"Begins on: {row['start_date_timestamp']}")
+                st.write(description)
+        st.subheader("")
